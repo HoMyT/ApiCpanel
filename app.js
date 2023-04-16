@@ -14,6 +14,7 @@ var users = require('./route/users');
 var email = require('./route/email');
 var projectUser = require('./route/ProjectUser');
 var logoEntreprise = require('./route/imgEntreprise');
+var admin = require('./route/admin');
 var hello = require('./route/hello');
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/v2/users', xss, users);
 app.use('/v2/email', xss, email);
 app.use('/v2/logo-entreprise', xss, logoEntreprise);
 app.use('/v2/project-user', xss, projectUser);
+app.use('/v2/admin', xss, admin);
 
 app.use("/img-entreprise", express.static(path.join(__dirname, "/img-entreprise")));
 app.use('/v2', hello);

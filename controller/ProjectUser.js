@@ -40,10 +40,18 @@ exports.postCommentaireProject = (req, res, next) => {
         uuid_project: connexion.escape(uuid_project)
     };
 
-    $Sql = `INSERT INTO discution_project(uuid_conversation, uuid_project, uuid_sender_message, commentaire) VALUES(${commentaireProject.uuid_conversation}, ${commentaireProject.uuid_project}, ${commentaireProject.uuid_sender_message}, ${commentaireProject.commentaire})`;
-    connexion.query($Sql, (err, results, fields) => {
+    $Sql = `SELECT * FROM users WHERE uuid = ${commentaireProject.uuid_sender_message}`;
+    connexion.query($Sql, (err, resultsUser, fields) => {
         if (err) { return res.status(401).json({message: "An error as been occured"}) }
-        else { return res.status(201).json({message: 'Votre message a bien été enregistré !'}) }
+        else {
+            const name = resultsUser.map(obj => obj.name)[0];
+            const last_name = resultsUser.map(obj => obj.last_name)[0];
+            $Sql = `INSERT INTO discution_project(uuid_conversation, uuid_project, uuid_sender_message, commentaire, name, last_name) VALUES(${commentaireProject.uuid_conversation}, ${commentaireProject.uuid_project}, ${commentaireProject.uuid_sender_message}, ${commentaireProject.commentaire}, ${JSON.stringify(name)}, ${JSON.stringify(last_name)})`;
+            connexion.query($Sql, (err, results, fields) => {
+                if (err) { return res.status(401).json({message: "An error as been occured"}) }
+                else { return res.status(201).json({message: 'Votre message a bien été enregistré !'}) }
+            })
+        }
     })
 
 }
@@ -55,7 +63,7 @@ exports.getCommentaire = (req, res, next) => {
         user: connexion.escape(req.auth.userId)
     };
 
-    $Sql = `SELECT * FROM discution_project AS dp JOIN users AS u WHERE dp.uuid_project = ${conversation.id} AND u.uuid = ${conversation.user};`
+    $Sql = `SELECT * FROM discution_project WHERE uuid_project = ${conversation.id};`
 
     connexion.query($Sql, (err, results, fields) => {
         if (err) { return res.status(401).json({ message: 'An error as been occured' }) }

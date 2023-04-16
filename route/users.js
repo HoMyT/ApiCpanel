@@ -9,7 +9,7 @@ var schemaConnexionUser = require('../schema/user/userSchemaConnexion')
 
 router.post('/', limiter, schemaInscriptionUser, controller.InscriptionUsers);
 router.post('/connexion', limiter, schemaConnexionUser, controller.ConnexionUsers);
-router.get('/info-project', token, controller.infoProject);
+router.get('/info-project/', token, controller.infoProject);
 router.get('/logo-entreprise', token, controller.logoEntreprise);
 
 module.exports = router;

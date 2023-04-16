@@ -35,6 +35,7 @@ exports.ConnexionUsers = (req, res, next) => {
     const { email, password } = req.body;
     const bodyEmail = connection.escape(email);
     const bodyPassword = connection.escape(password);
+
     let $Sql = `SELECT * FROM users WHERE email = ${bodyEmail}`;
     connection.query($Sql, function (err, results, fields) {
         const Resultpassword = results.map(results => results.password);
@@ -45,10 +46,16 @@ exports.ConnexionUsers = (req, res, next) => {
                 if (err) { return res.status(401).json({ message: `An error occurred while verifying your password, please try again: ${err}`}) }
                 if (!resultsbcrypt) { res.status(401).json({ message: "Your password is not valid!" }) }
                 else {
-                        const ResultUuid = results.map(obj => obj.uuid);
+                    const ResultAdmin = results.map(results => results.admin)[0];
+                    let admin = false;
+                    if (ResultAdmin == 69) {
+                        admin = true;
+                    }
+                    const ResultUuid = results.map(obj => obj.uuid);
                     res.status(201).json({
                         message: 'You are connected !',
                         token: jwt.sign({ uuid: ResultUuid }, process.env.PASSTOKEN, { expiresIn: "1H" }),
+                        admin: admin,
                         expireIn: 1000*60*60
                     })
                 }
