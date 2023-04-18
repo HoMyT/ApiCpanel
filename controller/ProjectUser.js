@@ -64,7 +64,6 @@ exports.getCommentaire = (req, res, next) => {
     };
 
     $Sql = `SELECT * FROM discution_project WHERE uuid_project = ${conversation.id};`
-
     connexion.query($Sql, (err, results, fields) => {
         if (err) { return res.status(401).json({ message: 'An error as been occured' }) }
         else { return res.status(201).json(results) }

@@ -1,11 +1,11 @@
 const Joi = require('joi');
 
 const userInscriptionSchema = Joi.object({
-    name: Joi.string().alphanum().min(5).max(50).required(),
+    name: Joi.string().regex(/^[\w\s]+$/).required(),
     email: Joi.string().email().required(),
     phone : Joi.number().integer(),
     subject: Joi.string().alphanum().min(5).max(50).required(),
-    message: Joi.string().regex(/^[\w\s]+$/),
+    message: Joi.string().regex(/^[\w\s]+$/).required(),
 })
 
 const valideUser = (req, res, next) => {

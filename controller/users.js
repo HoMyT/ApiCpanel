@@ -6,15 +6,16 @@ require('dotenv').config();
 
 
 exports.InscriptionUsers = (req, res, next) => {
-    const { email, password, name, last_name } = req.body;
+    const { email, password, confirmPassword, name, last_name } = req.body;
     const utilisateur = {
         uuid: connection.escape(uuidv4()),
         email: connection.escape(email),
         password: connection.escape(password),
+        confirmPassword: connection.escape(confirmPassword),
         name: connection.escape(name),
         last_name: connection.escape(last_name)
     };
-
+    if (utilisateur.password == utilisateur.confirmPassword) {
     bcrypt.genSalt(10, function (error, salt) {
         bcrypt.hash(utilisateur.password, salt, function (err, hash) {
             if (err) { res.status(401).json({ message: "An error occurred while encrypting your password, please try again" }) }
@@ -29,6 +30,9 @@ exports.InscriptionUsers = (req, res, next) => {
             }
         })
     })
+    }else {
+        return res.status(401).json({message: "Les mots de passe ne corresponde pas "})
+    }
 }
 
 exports.ConnexionUsers = (req, res, next) => {

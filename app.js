@@ -5,7 +5,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var xss = require('./middelware/xss');
+var xss = require('./middelware/xss/xss');
 // const cors = require("cors");
 var fs = require('fs');
 
@@ -15,27 +15,26 @@ var email = require('./route/email');
 var projectUser = require('./route/ProjectUser');
 var logoEntreprise = require('./route/imgEntreprise');
 var admin = require('./route/admin');
-var hello = require('./route/hello');
+
 
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-//express.json pour utilise l'object express.json pour recupere les requetes envoyer par l'user
 app.use(express.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//donnée l'acces de navigation a toute l'application pour evite les probleme de navigation
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
+
 app.use('/v2/', xss, routes);
 app.use('/v2/users', xss, users);
 app.use('/v2/email', xss, email);
@@ -44,7 +43,7 @@ app.use('/v2/project-user', xss, projectUser);
 app.use('/v2/admin', xss, admin);
 
 app.use("/img-entreprise", express.static(path.join(__dirname, "/img-entreprise")));
-app.use('/v2', hello);
+
 
 
 module.exports = app;

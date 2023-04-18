@@ -63,33 +63,6 @@ exports.getAllEmail = (req, res, next) => {
     })
 }
 
-exports.DeleteEmail = (req, res, next) => {
-    $Sql = `SELECT uuid,admin FROM users WHERE uuid = '${req.auth.userId}' `;
-    connection.query($Sql, (error, results, fields) => {
-        if (error) { return res.status(401).json({ message: `An error has occurred: ${error}` }) }
-        else if (results === 0) { return res.status(401).json({ message: 'Unknow User' }) }
-        else {
-            const ResultAdmin = results.map(results => results.admin);
-            if (ResultAdmin == process.env.ADMINID) {
-                $Sql = `SELECT * FROM user_email WHERE uuid = '${req.params.id}' `;
-                connection.query($Sql, (error, results, fields) => {
-                    if (error) { return res.status(401).json({ message: `An error has occurred: ${error}` }) }
-                    else if (results == 0) { return res.status(401).json({ message: 'Unknow email' }) }
-                    else {
-                        $Sql = `DELETE FROM user_email WHERE uuid = '${req.params.id}'`;
-                        connection.query($Sql, (error, results, fields) => {
-                            if (error) { return res.status(401).json({ message: `An error has occurred: ${error}` }) }
-                            else { return res.status(401).json({ message: "the email has been successfully deleted"}) }
-                        })
-                    }
-                })
-            } else {
-                return res.status(401).json({ message: "You are not authorized to do this action" });
-            }
-        }
-    })
-}
-
 exports.addEmailNewLester = (req, res, next) => {
     const { email } = req.body;
     const newEmail = {
